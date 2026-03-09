@@ -9,6 +9,7 @@
 
 body {
   font-family: 'PPNeueMontreal', sans-serif;
+  background-color: #000000;
 }
 
 @keyframes fade-pulse {

@@ -2,11 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-
 export default function Motion() {
     const videoRef = useRef<HTMLVideoElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
     const [posX, setPosX] = useState(50)
+    const [isPaused, setIsPaused] = useState(true)
 
     const dragStart = useRef<{ x: number; startPos: number } | null>(null)
     const overflow = useRef(0)
@@ -16,10 +16,15 @@ export default function Motion() {
         const video = videoRef.current
         if (!video) return
 
-        video.play().catch(() => {})
-        const handlePause = () => video.play().catch(() => {})
+        video.play().catch(() => { setIsPaused(true) })
+        const handlePause = () => { setIsPaused(true); video.play().catch(() => {}) }
+        const handlePlay = () => setIsPaused(false)
         video.addEventListener('pause', handlePause)
-        return () => video.removeEventListener('pause', handlePause)
+        video.addEventListener('play', handlePlay)
+        return () => {
+            video.removeEventListener('pause', handlePause)
+            video.removeEventListener('play', handlePlay)
+        }
     }, [])
 
     useEffect(() => {
@@ -64,13 +69,16 @@ export default function Motion() {
 
     const handleTouchEnd = () => { dragStart.current = null }
 
+    const handleTap = () => { videoRef.current?.play().catch(() => {}) }
+
     return (
         <div
             ref={containerRef}
-            className='w-full grow overflow-hidden'
+            className='w-full grow overflow-hidden relative'
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onClick={handleTap}
         >
             <video
                 ref={videoRef}
@@ -83,6 +91,15 @@ export default function Motion() {
                 className='w-full h-full object-cover pointer-events-none select-none'
                 style={{ objectPosition: `${posX}% 50%` }}
             />
+            {isPaused && (
+                <div className='absolute inset-0 flex items-center justify-center'>
+                    <div className='w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center'>
+                        <svg className='w-6 h-6 text-white ml-1' fill='currentColor' viewBox='0 0 24 24'>
+                            <path d='M8 5v14l11-7z' />
+                        </svg>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

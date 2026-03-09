@@ -1,0 +1,93 @@
+"use client";
+
+import Link from "next/link";
+import React from "react";
+
+type Variant = "primary" | "secondary" | "danger" | "success" | "ghost";
+type Size = "sm" | "md" | "lg";
+type ButtonType = "button" | "submit" | "reset";
+
+interface ButtonProps {
+  id?: string;
+  dark?: boolean;
+  children?: React.ReactNode;
+  text?: string;
+  href?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  variant?: Variant;
+  size?: Size;
+  disabled?: boolean;
+  className?: string;
+  type?: ButtonType;
+  [key: string]: unknown;
+}
+
+const Button = ({
+  id,
+  dark,
+  children,
+  text,
+  href,
+  onClick,
+  variant = "primary",
+  size = "md",
+  disabled = false,
+  className = "",
+  type = "button",
+  ...props
+}: ButtonProps) => {
+  const label = children || text;
+
+  const baseStyles =
+    "font-medium uppercase focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden active:scale-95 hover:scale-105 transition-transform duration-200 ease-out";
+
+  const sizeStyles: Record<Size, string> = {
+    sm: "px-3 py-1.5 text-xs",
+    md: "px-6 py-3 text-xs",
+    lg: "px-8 py-4 text-sm",
+  };
+
+  const variantStyles: Record<Variant, string> = {
+    primary: dark ? "bg-white text-black transition-all duration-300 border border-white" : "bg-black text-white transition-all duration-300",
+    secondary: dark ? "border border-white bg-black text-white transition-all duration-300 hover:bg-white hover:text-black" : "border bg-white border-gray-300 text-gray-900 transition-all duration-300",
+    danger: dark ? "bg-red-600 text-white transition-all duration-300 hover:bg-red-700 border border-red-600" : "bg-red-600 text-white transition-all duration-300",
+    success: dark ? "bg-green-600 text-white transition-all duration-300 hover:bg-green-700 border border-green-600" : "bg-green-600 text-white transition-all duration-300",
+    ghost: dark ? "text-white transition-all duration-300 hover:bg-neutral-800" : "text-gray-900 transition-all duration-300 hover:bg-gray-100",
+  };
+
+  const combinedClassName = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`;
+
+  const textWrapperContent = (
+    <span className="relative block h-full overflow-hidden">
+      <span className="block transition-transform duration-500 ease-out group-hover:-translate-y-full">
+        {label}
+      </span>
+      <span className="absolute block transition-transform duration-500 ease-out translate-y-full group-hover:translate-y-0 top-0 left-0 right-0">
+        {label}
+      </span>
+    </span>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={`group ${combinedClassName}`} {...(props as Record<string, unknown>)}>
+        {textWrapperContent}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      id={id}
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`group ${combinedClassName}`}
+    >
+      {textWrapperContent}
+    </button>
+  );
+};
+
+export default Button;
+export { Button };

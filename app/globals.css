@@ -10,3 +10,12 @@
 body {
   font-family: 'PPNeueMontreal', sans-serif;
 }
+
+@keyframes fade-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.fade-pulse {
+  animation: fade-pulse 5s ease-in-out infinite;
+}

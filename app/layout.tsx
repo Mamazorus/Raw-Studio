@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RAW STUDIO",
   description: "RAW STUDIO",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({

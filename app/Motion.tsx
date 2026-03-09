@@ -6,7 +6,7 @@ export default function Motion() {
     const videoRef = useRef<HTMLVideoElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
     const [posX, setPosX] = useState(50)
-    const [isPaused, setIsPaused] = useState(false)
+    const [isPaused, setIsPaused] = useState(true)
     const dragStart = useRef<{ x: number; startPos: number } | null>(null)
     const overflow = useRef(0)
     const isMobile = useRef(false)

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
+
 export default function Motion() {
     const videoRef = useRef<HTMLVideoElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
     const [posX, setPosX] = useState(50)
-    const [isPaused, setIsPaused] = useState(true)
+
     const dragStart = useRef<{ x: number; startPos: number } | null>(null)
     const overflow = useRef(0)
     const isMobile = useRef(false)
@@ -15,26 +16,10 @@ export default function Motion() {
         const video = videoRef.current
         if (!video) return
 
-        const tryPlay = () => video.play().catch(() => {})
-
-        video.play().catch(() => { setIsPaused(true) })
-
-        const handlePause = () => {
-            setIsPaused(true)
-            video.play().catch(() => {})
-        }
-        const handlePlay = () => setIsPaused(false)
-        const handleVisibility = () => { if (!document.hidden) tryPlay() }
-
+        video.play().catch(() => {})
+        const handlePause = () => video.play().catch(() => {})
         video.addEventListener('pause', handlePause)
-        video.addEventListener('play', handlePlay)
-        document.addEventListener('visibilitychange', handleVisibility)
-
-        return () => {
-            video.removeEventListener('pause', handlePause)
-            video.removeEventListener('play', handlePlay)
-            document.removeEventListener('visibilitychange', handleVisibility)
-        }
+        return () => video.removeEventListener('pause', handlePause)
     }, [])
 
     useEffect(() => {
@@ -79,20 +64,13 @@ export default function Motion() {
 
     const handleTouchEnd = () => { dragStart.current = null }
 
-    const handleTap = () => {
-        const video = videoRef.current
-        if (!video) return
-        video.play().catch(() => {})
-    }
-
     return (
         <div
             ref={containerRef}
-            className='w-full grow overflow-hidden relative'
+            className='w-full grow overflow-hidden'
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            onClick={handleTap}
         >
             <video
                 ref={videoRef}
@@ -105,11 +83,6 @@ export default function Motion() {
                 className='w-full h-full object-cover pointer-events-none select-none'
                 style={{ objectPosition: `${posX}% 50%` }}
             />
-            {isPaused && (
-                <div className='absolute inset-0 flex items-center justify-center'>
-                    <p className='text-white text-[10px] tracking-widest opacity-60'>TAP TO PLAY</p>
-                </div>
-            )}
         </div>
     )
 }

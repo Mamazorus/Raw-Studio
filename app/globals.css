@@ -12,14 +12,6 @@ body {
   background-color: #000000;
 }
 
-video::-webkit-media-controls,
-video::-webkit-media-controls-panel,
-video::-webkit-media-controls-play-button,
-video::-webkit-media-controls-start-playback-button {
-  display: none !important;
-  -webkit-appearance: none;
-}
-
 @keyframes fade-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
